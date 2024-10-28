@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<title>Comunicazione via WebSocket</title>
+<script type="text/javascript">
+  "use strict";
+
+  let ws = new WebSocket("ws://10.1.0.52:7070/serverchat/chat24");
+
+  // Gestore per la ricezione dei messaggi
+  ws.onmessage = function(messaggioRicevuto) {
+    document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n";
+  };
+
+  // Funzione per inviare il login
+  function inviaLogin() {
+    let messaggioLogin = "L;" + document.getElementById("utente").value + ";" + document.getElementById("password").value + ";2024-10-27T18:02:00";
+    ws.send(messaggioLogin);
+  }
+
+  // Funzione per inviare messaggi di chat
+  function inviaMessaggio() {
+    let mittente = document.getElementById("mittente").value;
+    let messaggio = document.getElementById("testo").value;
+    let messaggioDaInviare ="M"+";"+ mittente + ";" + messaggio;
+    ws.send(messaggioDaInviare);
+  }
+
+  function chiudiLaConnessione() {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.close();
+    }
+  }
+</script>
 </head>
 <body>
-    
+  <textarea id="ricezione" readonly></textarea><br/>
+  
+  <p>Utente: <input id="utente" type="text" /></p>
+  <p>Password: <input id="password" type="password" /></p> <!-- Campo password nascosto -->
+  <button onClick="inviaLogin()">Invia Login</button>
+
+  <p>Mittente: <input id="mittente" type="text" /></p>
+  <p>Messaggio: <input id="testo" type="text" /></p>
+  <button onClick="inviaMessaggio()">Invia Messaggio</button>
+  <button onClick="chiudiLaConnessione()">Chiudi</button>
+
 </body>
 </html>
