@@ -1,32 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <title>Comunicazione via WebSocket</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    width: 350px;
+    padding: 20px;
+    background-color: #2e2e2e;
+    border: 2px solid #ff3b3b;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  textarea {
+    width: 100%;
+    height: 150px;
+    resize: none;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ff3b3b;
+    background-color: #1a1a1a;
+    color: #ffdddd;
+    font-family: monospace;
+    margin-bottom: 20px;
+    outline: none;
+  }
+
+  p {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  input[type="text"], input[type="password"] {
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ff3b3b;
+    background-color: #1a1a1a;
+    color: #ffdddd;
+    font-size: 16px;
+    margin-bottom: 20px;
+    outline: none;
+  }
+
+  button {
+    padding: 10px 15px;
+    margin: 10px 0;
+    background-color: #ff3b3b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.1s;
+  }
+
+  button:hover {
+    background-color: #ff6565;
+    transform: scale(1.05);
+  }
+
+  button:active {
+    transform: scale(1);
+  }
+</style>
 <script type="text/javascript">
   "use strict";
 
   let ws = new WebSocket("ws://10.1.0.52:7070/serverchat/chat24");
 
-  // Gestore per la ricezione dei messaggi
   ws.onmessage = function(messaggioRicevuto) {
     document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n";
   };
 
   // Funzione per inviare il login
   function inviaLogin() {
-    let messaggioLogin = "L;" + document.getElementById("utente").value + ";" + document.getElementById("password").value + ";2024-10-27T18:02:00";
+    let messaggioLogin = "L;" + document.getElementById("utente").value + ";"  + document.getElementById("password").value + ";" + "L;" + ";2024-10-27T18:02:00";
     ws.send(messaggioLogin);
+
+    // Supponiamo che la connessione di login vada a buon fine
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("chatSection").classList.remove("hidden");
   }
 
   // Funzione per inviare messaggi di chat
   function inviaMessaggio() {
     let mittente = document.getElementById("mittente").value;
     let messaggio = document.getElementById("testo").value;
-    let messaggioDaInviare ="M"+";"+ mittente + ";" + messaggio;
+    let messaggioDaInviare = "M;N;" + mittente + ";iT-IT;" + messaggio + ";2024-10-27T18:02:00;";
     ws.send(messaggioDaInviare);
   }
 
+  // Funzione per chiudere la connessione
   function chiudiLaConnessione() {
     if (ws.readyState === WebSocket.OPEN) {
       ws.close();
@@ -35,16 +122,32 @@
 </script>
 </head>
 <body>
-  <textarea id="ricezione" readonly></textarea><br/>
-  
-  <p>Utente: <input id="utente" type="text" /></p>
-  <p>Password: <input id="password" type="password" /></p> <!-- Campo password nascosto -->
-  <button onClick="inviaLogin()">Invia Login</button>
+  <div class="container">    
+    <!-- Sezione di Login -->
+    <div id="loginSection">
+      <p>Utente:</p>
+      <input id="utente" type="text" placeholder="Inserisci il tuo utente"/>
 
-  <p>Mittente: <input id="mittente" type="text" /></p>
-  <p>Messaggio: <input id="testo" type="text" /></p>
-  <button onClick="inviaMessaggio()">Invia Messaggio</button>
-  <button onClick="chiudiLaConnessione()">Chiudi</button>
+      <p>Password:</p>
+      <input id="password" type="password" placeholder="Inserisci la tua password"/> 
 
+      <button onClick="inviaLogin()">Invia Login</button>
+    </div>
+
+    <!-- Sezione di Chat, nascosta inizialmente -->
+    <div id="chatSection" class="hidden">
+      <textarea id="ricezione" readonly placeholder="Ricezione messaggi..."></textarea>
+      
+      <p>Mittente:</p>
+      <input id="mittente" type="text" placeholder="Inserisci il mittente"/>
+
+      <p>Messaggio:</p>
+      <input id="testo" type="text" placeholder="Scrivi un messaggio"/>
+      
+      <button onClick="inviaMessaggio()">Invia Messaggio</button>
+      <button onClick="chiudiLaConnessione()">Chiudi Connessione</button>
+    </div>
+  </div>
 </body>
 </html>
+ 
