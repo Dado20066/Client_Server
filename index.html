@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Comunicazione via WebSocket</title>
 <style>
-  * {
+ * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -21,42 +21,57 @@
   }
 
   .container {
-    width: 350px;
+    width: 700px;
     padding: 20px;
     background-color: #2e2e2e;
-    border: 2px solid #ff3b3b;
+    border: 2px solid rgb(0, 162, 255);
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* Imposta un'altezza complessiva per il contenitore */
   }
 
   .hidden {
     display: none;
   }
 
-  textarea {
+  .chat-layout {
+    display: flex;
+    gap: 10px;
+    flex-grow: 1;
+    height: 100%; /* Espandi il layout della chat per tutto lo spazio disponibile */
+  }
+
+  .users-table, .messages-table {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Permette al textarea di estendersi verso il basso */
+  }
+
+  .users-table p, .messages-table p {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .users-table textarea, .messages-table textarea {
+    flex-grow: 1; /* Espandi il textarea per occupare tutto lo spazio */
     width: 100%;
-    height: 150px;
     resize: none;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #ff3b3b;
+    border: 1px solid rgb(0, 162, 255);
     background-color: #1a1a1a;
     color: #ffdddd;
     font-family: monospace;
-    margin-bottom: 20px;
     outline: none;
-  }
-
-  p {
-    margin-bottom: 8px;
-    font-weight: bold;
   }
 
   input[type="text"], input[type="password"] {
     padding: 10px;
     width: 100%;
     border-radius: 5px;
-    border: 1px solid #ff3b3b;
+    border: 1px solid rgb(0, 162, 255);
     background-color: #1a1a1a;
     color: #ffdddd;
     font-size: 16px;
@@ -67,7 +82,7 @@
   button {
     padding: 10px 15px;
     margin: 10px 0;
-    background-color: #ff3b3b;
+    background-color: rgb(0, 162, 255);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -78,12 +93,18 @@
   }
 
   button:hover {
-    background-color: #ff6565;
+    background-color: rgb(0, 162, 255);
     transform: scale(1.05);
   }
 
   button:active {
     transform: scale(1);
+  }
+  .error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: 10px;
+    display: none;
   }
 </style>
 <script type="text/javascript">
@@ -95,17 +116,24 @@
     document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n";
   };
 
-  // Funzione per inviare il login
   function inviaLogin() {
-    let messaggioLogin = "L;" + document.getElementById("utente").value + ";"  + document.getElementById("password").value + ";" + "L;" + ";2024-10-27T18:02:00";
-    ws.send(messaggioLogin);
+    let username = document.getElementById("utente").value;
+    let password = document.getElementById("password").value;
 
-    // Supponiamo che la connessione di login vada a buon fine
-    document.getElementById("loginSection").classList.add("hidden");
-    document.getElementById("chatSection").classList.remove("hidden");
+    // Verifica se username e password sono identici
+    if (username === password) {
+      let messaggioLogin = "L;" + username + ";" + password + ";" + "L;" + ";2024-10-27T18:02:00";
+      ws.send(messaggioLogin);
+
+      // Se login ha successo, mostra la schermata di chat
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("chatSection").classList.remove("hidden");
+    } else {
+      // Mostra il messaggio di errore se username e password non corrispondono
+      document.getElementById("errorMessage").style.display = "block";
+    }
   }
-
-  // Funzione per inviare messaggi di chat
+  
   function inviaMessaggio() {
     let mittente = document.getElementById("mittente").value;
     let messaggio = document.getElementById("testo").value;
@@ -113,7 +141,6 @@
     ws.send(messaggioDaInviare);
   }
 
-  // Funzione per chiudere la connessione
   function chiudiLaConnessione() {
     if (ws.readyState === WebSocket.OPEN) {
       ws.close();
@@ -123,7 +150,7 @@
 </head>
 <body>
   <div class="container">    
-    <!-- Sezione di Login -->
+    <!-- Sezione Del Login -->
     <div id="loginSection">
       <p>Utente:</p>
       <input id="utente" type="text" placeholder="Inserisci il tuo utente"/>
@@ -132,22 +159,37 @@
       <input id="password" type="password" placeholder="Inserisci la tua password"/> 
 
       <button onClick="inviaLogin()">Invia Login</button>
+      
+      <!-- Messaggio di errore -->
+      <p id="errorMessage" class="error">Username e password non corretti.</p>
     </div>
 
     <!-- Sezione di Chat, nascosta inizialmente -->
     <div id="chatSection" class="hidden">
-      <textarea id="ricezione" readonly placeholder="Ricezione messaggi..."></textarea>
-      
-      <p>Mittente:</p>
-      <input id="mittente" type="text" placeholder="Inserisci il mittente"/>
+      <div class="chat-layout">
+        
+        <!-- Tabella utenti online -->
+        <div class="users-table">
+          <p>Utenti Online:</p>
+          <textarea id="utentiOnline" readonly placeholder="Lista utenti online..."></textarea>
+        </div>
+        
+        <!-- Tabella messaggi -->
+        <div class="messages-table">
+          <p>Messaggi:</p>
+          <textarea id="ricezione" readonly placeholder="Ricezione messaggi..."></textarea>
+          
+          <p>Mittente:</p>
+          <input id="mittente" type="text" placeholder="Inserisci il mittente"/>
 
-      <p>Messaggio:</p>
-      <input id="testo" type="text" placeholder="Scrivi un messaggio"/>
-      
-      <button onClick="inviaMessaggio()">Invia Messaggio</button>
-      <button onClick="chiudiLaConnessione()">Chiudi Connessione</button>
+          <p>Messaggio:</p>
+          <input id="testo" type="text" placeholder="Scrivi un messaggio"/>
+          
+          <button onClick="inviaMessaggio()">Invia Messaggio</button>
+          <button onClick="chiudiLaConnessione()">Chiudi Connessione</button>
+        </div>
+      </div>
     </div>
   </div>
 </body>
 </html>
- 
