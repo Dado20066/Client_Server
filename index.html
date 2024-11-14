@@ -113,7 +113,22 @@
   let ws = new WebSocket("ws://10.1.0.52:7070/serverchat/chat24");
 
   ws.onmessage = function(messaggioRicevuto) {
-    document.getElementById("ricezione").textContent += messaggioRicevuto.data + "\n";
+    const dati = messaggioRicevuto.data.split(";"); // Dividi il messaggio ricevuto
+    const tipo = dati[0]; // Il primo elemento indica il tipo di messaggio
+
+    ws.onmessage = function(messaggioRicevuto) {
+  const dati = messaggioRicevuto.data.split(";"); // Dividi il messaggio ricevuto
+  const tipo = dati[0]; // Il primo elemento indica il tipo di messaggio
+
+  if (tipo === "M") { // Messaggio di chat
+    const messaggio = dati.slice(1).join(";"); // Riassembla il messaggio
+    document.getElementById("ricezione").textContent += messaggio + "\n";
+  } else if (tipo === "U") { // Utenti online
+    const utenti = dati.slice(1).join("\n"); // Riassembla l'elenco degli utenti
+    document.getElementById("utentiOnline").textContent = utenti;
+  }
+};
+
   };
 
   function inviaLogin() {
@@ -145,6 +160,8 @@
     if (ws.readyState === WebSocket.OPEN) {
       ws.close();
     }
+     document.getElementById("loginSection").classList.remove("hidden");
+     document.getElementById("chatSection").classList.add("hidden");
   }
 </script>
 </head>
@@ -170,14 +187,14 @@
         
         <!-- Tabella utenti online -->
         <div class="users-table">
-          <p>Utenti Online:</p>
-          <textarea id="utentiOnline" readonly placeholder="Lista utenti online..."></textarea>
+          <p>Messaggi:</p>
+          <textarea id="ricezione" readonly placeholder="Lista Messaggi"></textarea>
         </div>
         
         <!-- Tabella messaggi -->
         <div class="messages-table">
-          <p>Messaggi:</p>
-          <textarea id="ricezione" readonly placeholder="Ricezione messaggi..."></textarea>
+          <p>Utenti Online:</p>
+          <textarea id="utentiOnline" readonly placeholder="Lista Utenti"></textarea>
           
           <p>Mittente:</p>
           <input id="mittente" type="text" placeholder="Inserisci il mittente"/>
