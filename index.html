@@ -112,58 +112,72 @@
 
   let ws = new WebSocket("ws://10.1.0.52:7070/serverchat/chat24");
 
+  ws.onopen = function() {
+    console.log("Connessione WebSocket aperta.");
+  };
+
+  ws.onclose = function() {
+    console.log("Connessione WebSocket chiusa.");
+    alert("La connessione al server è stata chiusa.");
+  };
+
+  ws.onerror = function(error) {
+    console.error("Errore WebSocket:", error);
+    alert("Errore di connessione WebSocket.");
+  };
+
   ws.onmessage = function(messaggioRicevuto) {
-    const dati = messaggioRicevuto.data.split(";"); // Dividi il messaggio ricevuto
-    const tipo = dati[0]; // Il primo elemento indica il tipo di messaggio
+    const dati = messaggioRicevuto.data.split(";");
+    const tipo = dati[0];
 
-    ws.onmessage = function(messaggioRicevuto) {
-  const dati = messaggioRicevuto.data.split(";"); // Dividi il messaggio ricevuto
-  const tipo = dati[0]; // Il primo elemento indica il tipo di messaggio
-
-  if (tipo === "M") { // Messaggio di chat
-    const messaggio = dati.slice(1).join(";"); // Riassembla il messaggio
-    document.getElementById("ricezione").textContent += messaggio + "\n";
-  } else if (tipo === "U") { // Utenti online
-    const utenti = dati.slice(1).join("\n"); // Riassembla l'elenco degli utenti
-    document.getElementById("utentiOnline").textContent = utenti;
-  }
-};
-
+    if (tipo === "M") {
+      const messaggio = dati.slice(1).join(";");
+      document.getElementById("ricezione").textContent += messaggio + "\n";
+    } else if (tipo === "U") {
+      const utenti = dati.slice(1).join("\n");
+      document.getElementById("utentiOnline").textContent = utenti;
+    }
   };
 
   function inviaLogin() {
-    let username = document.getElementById("utente").value;
-    let password = document.getElementById("password").value;
+    const username = document.getElementById("utente").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-    // Verifica se username e password sono identici
-    if (username === password) {
-      let messaggioLogin = "L;" + username + ";" + password + ";" + "L;" + ";2024-10-27T18:02:00";
+    if (username && password) {
+      const messaggioLogin = `L;${username};${password};L;2024-10-27T18:02:00;`;
       ws.send(messaggioLogin);
+      console.log("Messaggio di login inviato:", messaggioLogin);
 
-      // Se login ha successo, mostra la schermata di chat
+      // Mostra la schermata di chat
       document.getElementById("loginSection").classList.add("hidden");
       document.getElementById("chatSection").classList.remove("hidden");
     } else {
-      // Mostra il messaggio di errore se username e password non corrispondono
       document.getElementById("errorMessage").style.display = "block";
     }
   }
-  
+
   function inviaMessaggio() {
-    let mittente = document.getElementById("mittente").value;
-    let messaggio = document.getElementById("testo").value;
-    let messaggioDaInviare = "M;N;" + mittente + ";iT-IT;" + messaggio + ";2024-10-27T18:02:00;";
-    ws.send(messaggioDaInviare);
+    const mittente = document.getElementById("mittente").value.trim();
+    const messaggio = document.getElementById("testo").value.trim();
+
+    if (mittente && messaggio) {
+      const messaggioDaInviare = `M;N;${mittente};it-IT;${messaggio};2024-10-27T18:02:00;`;
+      ws.send(messaggioDaInviare);
+      console.log("Messaggio inviato:", messaggioDaInviare);
+    } else {
+      alert("Inserisci il mittente e un messaggio.");
+    }
   }
 
   function chiudiLaConnessione() {
     if (ws.readyState === WebSocket.OPEN) {
       ws.close();
     }
-     document.getElementById("loginSection").classList.remove("hidden");
-     document.getElementById("chatSection").classList.add("hidden");
+    document.getElementById("loginSection").classList.remove("hidden");
+    document.getElementById("chatSection").classList.add("hidden");
   }
 </script>
+
 </head>
 <body>
   <div class="container">    
