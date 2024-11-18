@@ -1,226 +1,49 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
-<meta charset="UTF-8">
-<title>Comunicazione via WebSocket</title>
-<style>
- * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  <meta charset="UTF-8">
+  <title>Comunicazione via WebSocket</title>
 
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #1e1e1e;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+  <script src="javascript.js"></script>
 
-  .container {
-    width: 700px;
-    padding: 20px;
-    background-color: #2e2e2e;
-    border: 2px solid rgb(0, 162, 255);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-    display: flex;
-    flex-direction: column;
-    height: 80vh; /* Imposta un'altezza complessiva per il contenitore */
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  .chat-layout {
-    display: flex;
-    gap: 10px;
-    flex-grow: 1;
-    height: 100%; /* Espandi il layout della chat per tutto lo spazio disponibile */
-  }
-
-  .users-table, .messages-table {
-    flex: 1;
-    display: flex;
-    flex-direction: column; /* Permette al textarea di estendersi verso il basso */
-  }
-
-  .users-table p, .messages-table p {
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-
-  .users-table textarea, .messages-table textarea {
-    flex-grow: 1; /* Espandi il textarea per occupare tutto lo spazio */
-    width: 100%;
-    resize: none;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid rgb(0, 162, 255);
-    background-color: #1a1a1a;
-    color: #ffdddd;
-    font-family: monospace;
-    outline: none;
-  }
-
-  input[type="text"], input[type="password"] {
-    padding: 10px;
-    width: 100%;
-    border-radius: 5px;
-    border: 1px solid rgb(0, 162, 255);
-    background-color: #1a1a1a;
-    color: #ffdddd;
-    font-size: 16px;
-    margin-bottom: 20px;
-    outline: none;
-  }
-
-  button {
-    padding: 10px 15px;
-    margin: 10px 0;
-    background-color: rgb(0, 162, 255);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.3s, transform 0.1s;
-  }
-
-  button:hover {
-    background-color: rgb(0, 162, 255);
-    transform: scale(1.05);
-  }
-
-  button:active {
-    transform: scale(1);
-  }
-  .error {
-    color: #ff4d4d;
-    font-size: 14px;
-    margin-top: 10px;
-    display: none;
-  }
-</style>
-<script type="text/javascript">
-  "use strict";
-
-  let ws = new WebSocket("ws://10.1.0.52:7070/serverchat/chat24");
-
-  ws.onopen = function() {
-    console.log("Connessione WebSocket aperta.");
-  };
-
-  ws.onclose = function() {
-    console.log("Connessione WebSocket chiusa.");
-    alert("La connessione al server è stata chiusa.");
-  };
-
-  ws.onerror = function(error) {
-    console.error("Errore WebSocket:", error);
-    alert("Errore di connessione WebSocket.");
-  };
-
-  ws.onmessage = function(messaggioRicevuto) {
-    const dati = messaggioRicevuto.data.split(";");
-    const tipo = dati[0];
-
-    if (tipo === "M") {
-      const messaggio = dati.slice(1).join(";");
-      document.getElementById("ricezione").textContent += messaggio + "\n";
-    } else if (tipo === "U") {
-      const utenti = dati.slice(1).join("\n");
-      document.getElementById("utentiOnline").textContent = utenti;
-    }
-  };
-
-  function inviaLogin() {
-    const username = document.getElementById("utente").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (username && password) {
-      const messaggioLogin = `L;${username};${password};L;2024-10-27T18:02:00;`;
-      ws.send(messaggioLogin);
-      console.log("Messaggio di login inviato:", messaggioLogin);
-
-      // Mostra la schermata di chat
-      document.getElementById("loginSection").classList.add("hidden");
-      document.getElementById("chatSection").classList.remove("hidden");
-    } else {
-      document.getElementById("errorMessage").style.display = "block";
-    }
-  }
-
-  function inviaMessaggio() {
-    const mittente = document.getElementById("mittente").value.trim();
-    const messaggio = document.getElementById("testo").value.trim();
-
-    if (mittente && messaggio) {
-      const messaggioDaInviare = `M;N;${mittente};it-IT;${messaggio};2024-10-27T18:02:00;`;
-      ws.send(messaggioDaInviare);
-      console.log("Messaggio inviato:", messaggioDaInviare);
-    } else {
-      alert("Inserisci il mittente e un messaggio.");
-    }
-  }
-
-  function chiudiLaConnessione() {
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.close();
-    }
-    document.getElementById("loginSection").classList.remove("hidden");
-    document.getElementById("chatSection").classList.add("hidden");
-  }
-</script>
-
+  <link rel="stylesheet" href="stile.css">
 </head>
+
 <body>
-  <div class="container">    
-    <!-- Sezione Del Login -->
+  <div class="container">
     <div id="loginSection">
       <p>Utente:</p>
-      <input id="utente" type="text" placeholder="Inserisci il tuo utente"/>
+      <input id="utente" type="text" placeholder="Inserisci il tuo utente" />
 
       <p>Password:</p>
-      <input id="password" type="password" placeholder="Inserisci la tua password"/> 
+      <input id="password" type="password" placeholder="Inserisci la tua password" />
 
       <button onClick="inviaLogin()">Invia Login</button>
-      
-      <!-- Messaggio di errore -->
       <p id="errorMessage" class="error">Username e password non corretti.</p>
+      <p id="loadingMessage" class="loading">Effettuando il login...</p>
     </div>
 
-    <!-- Sezione di Chat, nascosta inizialmente -->
     <div id="chatSection" class="hidden">
       <div class="chat-layout">
-        
-        <!-- Tabella utenti online -->
         <div class="users-table">
           <p>Messaggi:</p>
           <textarea id="ricezione" readonly placeholder="Lista Messaggi"></textarea>
         </div>
-        
-        <!-- Tabella messaggi -->
         <div class="messages-table">
           <p>Utenti Online:</p>
           <textarea id="utentiOnline" readonly placeholder="Lista Utenti"></textarea>
-          
-          <p>Mittente:</p>
-          <input id="mittente" type="text" placeholder="Inserisci il mittente"/>
-
           <p>Messaggio:</p>
-          <input id="testo" type="text" placeholder="Scrivi un messaggio"/>
-          
+          <input id="testo" type="text" placeholder="Scrivi un messaggio" />
           <button onClick="inviaMessaggio()">Invia Messaggio</button>
           <button onClick="chiudiLaConnessione()">Chiudi Connessione</button>
         </div>
       </div>
     </div>
   </div>
+
+
+
 </body>
+
 </html>
