@@ -30,6 +30,10 @@ body {
   display: none;
 }
 
+.visibile{
+  display: block;
+}
+
 .chat-layout {
   display: flex;
   gap: 10px;
