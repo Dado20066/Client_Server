@@ -3,7 +3,7 @@ type = "text/javascript" >
 
 
 let ws = new WebSocket("ws://10.1.0.52:7070/serverchat/chat24");
-
+//let ws = new WebSocket("ws://localhost:8080/serverchat/chat24");
 
 ws.onmessage = function (messaggioRicevuto) {
   document.getElementById("ricezione").textContent += messaggioRicevuto.data.messaggio + "\n";
