@@ -6,6 +6,8 @@ let ws = new WebSocket("ws://10.1.0.52:7070/serverchat/chat24");
 
 
 ws.onmessage = function (messaggioRicevuto) {
+  let testoArrivato = messaggioRicevuto.data;
+  
   document.getElementById("ricezione").textContent += messaggioRicevuto.data.messaggio + "\n";
   document.getElementById("messages-table") = messaggioRicevuto.data.messaggioLogin;
 };
