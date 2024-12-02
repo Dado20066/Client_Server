@@ -1,118 +1,198 @@
+/* Reset del margine e padding per tutti gli elementi */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* Assicura che il padding e il bordo siano inclusi nelle dimensioni dell'elemento */
 }
 
+/* Stile del corpo della pagina */
 body {
   font-family: Arial, sans-serif;
+  /* Imposta il font di base */
   background-color: #1e1e1e;
+  /* Sfondo scuro */
   color: #fff;
+  /* Testo bianco */
   display: flex;
+  /* Usa Flexbox per il layout */
   justify-content: center;
+  /* Allinea orizzontalmente al centro */
   align-items: center;
+  /* Allinea verticalmente al centro */
   height: 100vh;
+  /* Altezza della viewport */
 }
 
+/* Contenitore principale per il layout */
 .container {
   width: 700px;
+  /* Larghezza fissa */
   padding: 20px;
+  /* Padding interno */
   background-color: #2e2e2e;
+  /* Sfondo scuro per il contenitore */
   border: 2px solid rgb(0, 162, 255);
+  /* Bordo blu */
   border-radius: 8px;
+  /* Angoli arrotondati */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  /* Ombra per dare profondità */
   display: flex;
+  /* Usa Flexbox per il layout del contenuto */
   flex-direction: column;
+  /* Dispone gli elementi in colonna */
   height: 80vh;
+  /* Altezza del contenitore */
 }
 
+/* Classe per nascondere gli elementi */
 .hidden {
   display: none;
 }
 
-.visibile{
+/* Classe per rendere visibili gli elementi */
+.visibile {
   display: block;
 }
 
+/* Layout della chat */
 .chat-layout {
   display: flex;
+  /* Usa Flexbox per disporre gli elementi orizzontalmente */
   gap: 10px;
+  /* Spazio tra gli elementi */
   flex-grow: 1;
+  /* Rende la sezione della chat flessibile */
   height: 100%;
+  /* Altezza al 100% del contenitore */
 }
 
+/* Stile per la sezione degli utenti */
 .users-table,
 .messages-table {
   flex: 1;
+  /* Occupano lo stesso spazio all'interno del layout */
   display: flex;
   flex-direction: column;
+  /* Dispone gli elementi in colonna */
 }
 
+/* Titoli delle sezioni degli utenti e dei messaggi */
 .users-table p,
 .messages-table p {
   font-weight: bold;
+  /* Grassetto per i titoli */
   margin-bottom: 8px;
+  /* Spazio sotto il titolo */
 }
 
+/* Stile per le textarea (messaggi e utenti) */
 .users-table textarea,
 .messages-table textarea {
   flex-grow: 1;
+  /* Permette di occupare tutto lo spazio disponibile */
   width: 100%;
+  /* Larghezza al 100% */
   resize: none;
+  /* Disabilita la possibilità di ridimensionare */
   padding: 10px;
+  /* Spazio interno */
   border-radius: 5px;
+  /* Angoli arrotondati */
   border: 1px solid rgb(0, 162, 255);
+  /* Bordo blu */
   background-color: #1a1a1a;
+  /* Sfondo scuro */
   color: #ffdddd;
+  /* Colore del testo chiaro */
   font-family: monospace;
+  /* Font a larghezza fissa */
   outline: none;
+  /* Rimuove il bordo di selezione */
 }
 
+/* Stile per gli input di testo (username, password, messaggio) */
 input[type="text"],
 input[type="password"] {
   padding: 10px;
+  /* Spazio interno */
   width: 100%;
+  /* Larghezza al 100% */
   border-radius: 5px;
+  /* Angoli arrotondati */
   border: 1px solid rgb(0, 162, 255);
+  /* Bordo blu */
   background-color: #1a1a1a;
+  /* Sfondo scuro */
   color: #ffdddd;
+  /* Colore del testo chiaro */
   font-size: 16px;
+  /* Imposta la dimensione del testo */
   margin-bottom: 20px;
+  /* Distanza dal prossimo elemento */
   outline: none;
+  /* Rimuove il bordo di selezione */
 }
 
+/* Stile per i bottoni */
 button {
   padding: 10px 15px;
+  /* Spazio interno */
   margin: 10px 0;
+  /* Margine sopra e sotto */
   background-color: rgb(0, 162, 255);
+  /* Colore di sfondo blu */
   color: #fff;
+  /* Colore del testo bianco */
   border: none;
+  /* Rimuove il bordo */
   border-radius: 5px;
+  /* Angoli arrotondati */
   font-weight: bold;
+  /* Testo in grassetto */
   cursor: pointer;
+  /* Cambia il cursore a mano */
   width: 100%;
+  /* Larghezza al 100% */
   transition: background-color 0.3s, transform 0.1s;
+  /* Transizione per il colore di sfondo e l'effetto di trasformazione */
 }
 
+/* Effetto hover per il bottone */
 button:hover {
   background-color: rgb(0, 162, 255);
+  /* Colore di sfondo invariato */
   transform: scale(1.05);
+  /* Ingrandisce leggermente il bottone */
 }
 
+/* Effetto di pressione del bottone */
 button:active {
   transform: scale(1);
+  /* Rimuove l'ingrandimento quando il bottone è premuto */
 }
 
+/* Messaggio di errore (ad esempio login fallito) */
 .error {
   color: #ff4d4d;
+  /* Colore rosso per gli errori */
   font-size: 14px;
+  /* Dimensione del testo */
   margin-top: 10px;
+  /* Spazio sopra il messaggio */
   display: none;
+  /* Rende il messaggio invisibile di default */
 }
 
+/* Messaggio di caricamento (ad esempio durante il login) */
 .loading {
   display: none;
+  /* Rende il messaggio invisibile di default */
   font-size: 14px;
+  /* Dimensione del testo */
   color: #ffa500;
+  /* Colore arancione */
   margin-top: 10px;
+  /* Spazio sopra il messaggio */
 }

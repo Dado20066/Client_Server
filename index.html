@@ -10,8 +10,11 @@
   <link rel="stylesheet" href="stile.css">
 </head>
 
+
 <body>
   <div class="container">
+
+    <!-- Sezione di login -->
     <div id="loginSection">
       <p>Utente:</p>
       <input id="utente" type="text" placeholder="Inserisci il tuo utente" />
@@ -20,30 +23,38 @@
       <input id="password" type="password" placeholder="Inserisci la tua password" />
 
       <button onClick="inviaLogin()">Invia Login</button>
+
+      <!-- Messaggi di errore o di caricamento -->
       <p id="errorMessage" class="error">Username e password non corretti.</p>
       <p id="loadingMessage" class="loading">Effettuando il login...</p>
     </div>
 
+    <!-- Sezione della chat (visibile solo dopo login) -->
     <div id="chatSection" class="hidden">
       <div class="chat-layout">
+
+        <!-- Sezione dei messaggi -->
         <div class="messages-table">
           <p>Messaggi:</p>
           <textarea id="ricezione" readonly placeholder="Lista Messaggi"></textarea>
         </div>
+
+        <!-- Sezione degli utenti online -->
         <div class="users-table">
           <p>Utenti Online:</p>
           <textarea id="messages-table" readonly placeholder="Lista Utenti"></textarea>
+
+          <!-- Input per il messaggio da inviare -->
           <p>Messaggio:</p>
           <input id="testo" type="text" placeholder="Scrivi un messaggio" />
+
+          <!-- Pulsanti per inviare il messaggio o chiudere la connessione -->
           <button onClick="inviaMessaggio()">Invia Messaggio</button>
           <button onClick="chiudiLaConnessione()">Chiudi Connessione</button>
         </div>
       </div>
     </div>
   </div>
-
-
-
 </body>
 
 </html>
